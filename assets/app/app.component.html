@@ -1,0 +1,9 @@
+<!-- [message]="message" a way to binding the message property in app.module to the message.module -->
+<!-- $event allows you to access the value of a created event -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <app-message [inputMessage]="message" (editClicked)="message.content = $event"></app-message>
+    </div>
+  </div>
+</div>
