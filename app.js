@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 
 
 var appRoutes = require('./routes/app');
+var messagesRoutes = require('./routes/messages');
 
 var app = express();
 mongoose.connect('mongodb://test:test@ds035643.mlab.com:35643/database_test', {useMongoClient: true});
@@ -39,15 +40,15 @@ app.use(function (req, res, next) {
 });
 
 //forwards any req to appRoutes variable (app.js file in routes folder)
+//putting message first allows every request to go through it first than to appRoutes
+app.use('/message', messagesRoutes);
 app.use('/', appRoutes);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next, err) {
-    if(err) {
-      console.log(err);
-    } else{
-      return res.render('index');
-    }
+//not adding an err callback allows for angular and node to find the routes in the app.routing.ts file
+//the err would prevent angular from "catching" the route before the err is returned/rendered
+app.use(function (req, res, next) {
+    return res.render('index');
 });
 
 
