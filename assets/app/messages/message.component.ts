@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Message} from './message.model';
 import {MessageService} from './message.service';
 
@@ -27,9 +27,9 @@ import {MessageService} from './message.service';
 //the emit method creates a new event
 //you can use any name for this type of binding
 //the beginning tells message to follow the structure of Message
+//@Output() editClicked = new EventEmitter<string>();
 export class MessageComponent {
   @Input('inputMessage') message: Message;
-  @Output() editClicked = new EventEmitter<string>();
 
   constructor(private messageService: MessageService) {}
 
@@ -38,6 +38,6 @@ export class MessageComponent {
   }
 
   onEdit() {
-    this.editClicked.emit('A new value')
+    this.messageService.editMessage(this.message);
   }
 }
