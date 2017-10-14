@@ -13,16 +13,24 @@ import {Message} from "./message.model";
 //new EventEmitter<Message>(); emits a new message object on event
 export class MessageService {
   private messages: Message[] = [];
+
+  //this emits an ovject of type Message for use in the input of message component
   messageisEdited = new EventEmitter<Message>();
 
+  //Inject HttpClient into your component or service.
   constructor(private http: Http) {}
 
   addMessage(message: Message) {
-    this.messages.push(message);
+    // this.messages.push(message);
     const body = JSON.stringify(message);
     const headers = new Headers({'Content-Type': 'application/json'});
     return this.http.post("http://localhost:3000/message", body, {headers: headers})
-        .map((response: Response) => response.json())
+        .map((response: Response) => {
+          const result = response.json();
+          const message = new Message(result.obj.content, "dummy", result.obj._id, null);
+          this.messages.push(message);
+          return message;
+        })
         .catch((error: Response) => Observable.throw(error.json()));
   }
   getMessages() {
@@ -31,14 +39,22 @@ export class MessageService {
             const messages = response.json().obj;
             let transformedMessages: Message[] = [];
             for (let message of messages) {
-              transformedMessages.push(new Message(message.content, 'Dummy', message.id, null))
+              transformedMessages.push(new Message(message.content, 'Dummy', message._id, null))
             }
             this.messages = transformedMessages;
             return transformedMessages;
         })
         .catch((error: Response) => Observable.throw(error.json()));
   }
+  updateMessage(message: Message) {
+    const body = JSON.stringify(message);
+    const headers = new Headers({'Content-Type': 'application/json'});
+    return this.http.patch("http://localhost:3000/message/" + message.messageId, body, {headers: headers})
+        .map((response: Response) => response.json())
+        .catch((error: Response) => Observable.throw(error.json()));
+  }
   editMessage(message: Message) {
+    //emits the message we want to the event emitter
     this.messageisEdited.emit(message);
   }
   deleteMessage(message: Message) {

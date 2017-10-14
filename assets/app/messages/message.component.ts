@@ -33,11 +33,12 @@ export class MessageComponent {
 
   constructor(private messageService: MessageService) {}
 
-  onDelete() {
-    this.messageService.deleteMessage(this.message);
-  }
-
   onEdit() {
     this.messageService.editMessage(this.message);
   }
+
+  onDelete() {
+      this.messageService.deleteMessage(this.message);
+  }
+
 }
