@@ -17,6 +17,7 @@ import {HeaderComponent} from "./header.component";
 import {LogoutComponent} from "./auth/logout.component";
 import {SignUpComponent} from "./auth/signup.component";
 import {SignInComponent} from "./auth/signin.component";
+import {AuthService} from "./auth/auth.service";
 
 
 import {routing} from './app.routing';
@@ -35,7 +36,15 @@ import {routing} from './app.routing';
         SignUpComponent,
         SignInComponent
     ],
-    imports: [BrowserModule, FormsModule, routing, ReactiveFormsModule, HttpModule],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        routing,
+        ReactiveFormsModule,
+        HttpModule
+    ],
+    //whatever is provided is available throughout the entire module(great place to create a single instance of an application-wide service)
+    providers: [AuthService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 
 var appRoutes = require('./routes/app');
 var messagesRoutes = require('./routes/messages');
+var userRoutes = require('./routes/user');
 
 var app = express();
 mongoose.connect('mongodb://test:test@ds035643.mlab.com:35643/database_test', {useMongoClient: true});
@@ -42,6 +43,7 @@ app.use(function (req, res, next) {
 //forwards any req to appRoutes variable (app.js file in routes folder)
 //putting message first allows every request to go through it first than to appRoutes
 app.use('/message', messagesRoutes);
+app.use('/user', userRoutes);
 app.use('/', appRoutes);
 
 // catch 404 and forward to error handler
