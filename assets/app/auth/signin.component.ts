@@ -1,5 +1,8 @@
 import {Component} from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
+import {User} from './user.model';
+import {AuthService} from './auth.service';
+import {Router} from '@angular/router';
 
 @Component ({
   selector: 'app-sign-in',
@@ -9,8 +12,22 @@ import {FormGroup, FormControl, Validators} from '@angular/forms';
 export class SignInComponent {
   myForm: FormGroup;
 
+  constructor(private authService: AuthService, private router: Router){}
+
+  //.subscribe() tells us what to do with the returning data
+  //localStorage is a browser storage for data (persists)
+  //this.router.navigateByUrl('/'); ==> Navigates to proposed route using the Router from angular
   onSubmit() {
-    console.log(this.myForm);
+    const user = new User(this.myForm.value.email, this.myForm.value.password);
+    this.authService.signin(user)
+      .subscribe(
+        data => {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('userId', data.userId);
+          this.router.navigateByUrl('/');
+        },
+        error => console.error(error)
+      );
     this.myForm.reset();
   }
 

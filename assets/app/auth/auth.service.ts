@@ -19,4 +19,14 @@ export class AuthService {
             .map((response: Response) => response.json())
             .catch((error: Reponse) => Observable.throw(error.json()));
   }
+
+  signin(user: User) {
+    const body = JSON.stringify(user);
+    const headers = new Headers({'Content-Type': 'application/json'});
+
+    //this connects to the post route just created
+    return this.http.post("http://localhost:3000/user/signin", body, {headers: headers})
+            .map((response: Response) => response.json())
+            .catch((error: Reponse) => Observable.throw(error.json()));
+  }
 }
