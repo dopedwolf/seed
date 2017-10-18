@@ -29,4 +29,14 @@ export class AuthService {
             .map((response: Response) => response.json())
             .catch((error: Reponse) => Observable.throw(error.json()));
   }
+
+  //erases the token that is saved
+  logout(){
+    localStorage.clear();
+  }
+
+  //returns true or false
+  isLoggedIn() {
+    return localStorage.getItem('token') !== null;
+  }
 }
