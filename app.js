@@ -12,7 +12,7 @@ var messagesRoutes = require('./routes/messages');
 var userRoutes = require('./routes/user');
 
 var app = express();
-mongoose.connect('test:test@ds035643.mlab.com:35643/database_test', {useMongoClient: true});
+mongoose.connect('mongodb://test:test@ds035643.mlab.com:35643/database_test', {useMongoClient: true});
 
 // view engine setup
 //tells express app where we keep our views and which view engine
