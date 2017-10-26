@@ -5,8 +5,11 @@ var Message = require('../models/messages');
 var jwt = require('jsonwebtoken');
 
 //adding .exec() executes all methods like .find()
+//populate is mongoose method allowing the data to expand when retrieving
+//^^ first param is the name of desired field(user) and desired data(firstName) now each message will have this info
 router.get('/', function(req, res, next){
   Message.find()
+      .populate('user', 'firstName')
       .exec(function(err, messages){
         if (err) {
           return res.status(500).json({
@@ -58,17 +61,18 @@ router.post('/', function (req, res, next) {
       }
       //pushes newly created message to array of messages in user model
       user.messages.push(result);
-      user.save();
       res.status(201).json({
         message: 'Saved Message',
         obj: result
       });
-    })
-  })
+      user.save();
+    });
+  });
 });
 
 //patch is commonly used to change existing data (put() is an alternative)
 router.patch("/:id", function(req, res, next){
+  var decoded = jwt.decode(req.query.token);
   Message.findById(req.params.id, function(err, message){
     if (err) {
       return res.status(500).json({
@@ -80,6 +84,12 @@ router.patch("/:id", function(req, res, next){
       return res.status(500).json({
         title: 'No Message Found',
         error: {message: 'Message not found'}
+      });
+    }
+    if(message.user != decoded.user._id) {
+      return res.status(401).json({
+        title: 'Not Authenticated',
+        error: {message: 'Users do not match'}
       });
     }
     message.content = req.body.content;
@@ -99,6 +109,7 @@ router.patch("/:id", function(req, res, next){
 });
 
 router.delete("/:id", function(req, res, next){
+  var decoded = jwt.decode(req.query.token);
   Message.findById(req.params.id, function(err, message){
     if (err) {
       return res.status(500).json({
@@ -110,6 +121,12 @@ router.delete("/:id", function(req, res, next){
       return res.status(500).json({
         title: 'No Message Found',
         error: {message: 'Message not found'}
+      });
+    }
+    if(message.user != decoded.user._id) {
+      return res.status(401).json({
+        title: 'Not Authenticated',
+        error: {message: 'Users do not match'}
       });
     }
     message.remove(function(err, result) {
